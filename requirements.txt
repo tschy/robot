@@ -1,0 +1,6 @@
+# For testing and structure
+pytest==8.1.1
+black==24.3.0
+
+# Standard math/robotics helpers if needed later
+numpy==1.26.4
