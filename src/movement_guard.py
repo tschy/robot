@@ -18,8 +18,5 @@ class MovementGuard:
         return 0, -(self.l1 + self.l2) * 0.7
 
 
-    """
- # Target not reachable: too close to hip, leg too thick, etc., 
- # define and account 
- for unreachable zones
- """
+# TODO Target not reachable: too close to hip, leg too thick, etc.,
+# TODO  define and account for unreachable zones

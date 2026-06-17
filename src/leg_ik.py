@@ -7,7 +7,8 @@ class LegIK:
 
     ):
         if l1 <= 0 or l2 <= 0:
-            raise ValueError("Leg segment lengths must be greater than zero.")
+            raise ValueError(
+                "Leg segment lengths must be greater than zero.")
         self.l1 = float(l1)
         self.l2 = float(l2)
 
@@ -52,16 +53,6 @@ class LegIK:
         except ValueError:
             # Handle "out of reach" logic here
             return None, None
-"""
-constraints:
 
-
-TODO
-- hip angle measured from where?
-- Separate math/constraints manager/translation to servo commands
-
-
-
-TODO LATER 
-- legs should be bend in neutral position
-"""
+# TODO hip angle measured from where?
+# TODO LATER legs should be bend in neutral position

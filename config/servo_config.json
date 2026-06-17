@@ -1,6 +1,0 @@
-{
-  "FRONT_LEFT":  {"hip": 0, "thigh": 1, "knee": 2},
-  "FRONT_RIGHT": {"hip": 4, "thigh": 5, "knee": 6},
-  "BACK_LEFT":   {"hip": 8, "thigh": 9, "knee": 10},
-  "BACK_RIGHT":  {"hip": 12, "thigh": 13, "knee": 14}
-}
