@@ -1,31 +1,36 @@
 import math
 
-
-
 class LegIK:
     def __init__(self,
                  l1: float,
                  l2: float,
-                 min_angles : tuple[float | int, float | int] =(0, 0),
-                 max_angles : tuple[float | int, float | int] =(180, 180)
+                 # min_angles : tuple[float | int, float | int] =(0, 0),
+                 # max_angles : tuple[float | int, float | int] =(180, 180)
     ):
         self.l1 = float(l1)
         self.l2 = float(l2)
-        self.min_h, self.min_k = min_angles
-        self.max_h, self.max_k = max_angles
+        # self.min_h, self.min_k = min_angles
+        # self.max_h, self.max_k = max_angles
 
-    def calculate_angles(self, x: float,
-                         y: float) -> tuple[float, float]:
+    def calculate_angles(self,
+                         x: float,
+                         y: float) \
+            -> tuple[float, float]:
 
         x, y = float(x), float(y)
-        # Law of Cosines
+
         dist_sq = x ** 2 + y ** 2
         dist = math.sqrt(dist_sq)
+        #
+        # if dist < 0.001:
+        #     # Return a safe default (e.g., fully retracted or extended)
+        #     return 0.0, 180.0
 
         # Knee angle (theta2) interior
         cos_theta2 =  (self.l1**2 + self.l2**2 - dist_sq) / (2 * self.l1 * self.l2)
 
-        theta2 = math.acos(max(-1.0, min(1.0, cos_theta2))) # Clamp for safety
+        # Prevent overflow through rounding errors
+        theta2 = math.acos(max(-1.0, min(1.0, cos_theta2)))
 
         # Hip angle (theta1)
         cos_alpha = (self.l1 ** 2 + dist_sq - self.l2 ** 2) / (2 * self.l1 * dist)
@@ -33,13 +38,28 @@ class LegIK:
 
         h_deg, k_deg = math.degrees(theta1), math.degrees(theta2)
 
-        # Apply constraints
-        if not (self.min_h <= h_deg <= self.max_h) or not (self.min_k <= k_deg <= self.max_k):
-            raise ValueError("Target reachable but outside of physical servo limits.")
-
         return h_deg, k_deg
 
+    def calculate_angles_with_constraints(self,
+                                          x,
+                                          y)\
+            -> tuple[float | None, float | None]:
+        # 1. Handle the singularity/zero case
+        if (x**2 + y**2) < 0.001:
+            return 0.0, 0.0 # TODO replace 0,0 with appropriate values
 
+        if x == 0 and y == 0: # TODO replace 0,0 with appropriate values
+            return 0.0, 0.0 # Skip the center point
+
+        if self.l1 == 0 or self.l2 == 0 :
+            return 0.0, 0.0
+
+        # 2. Call the engine
+        try:
+            return self.calculate_angles(x, y)
+        except ValueError:
+            # Handle "out of reach" logic here
+            return None, None
 """
 constraints:
 
@@ -49,6 +69,10 @@ constraints:
  for unreachable zones
     if dist < 0.1:
         raise ValueError("Target too close to hip (Singularity).")
+
+# Apply constraints
+    if not (self.min_h <= h_deg <= self.max_h) or not (self.min_k <= k_deg <= self.max_k):
+        raise ValueError("Target reachable but outside of physical servo limits.")
 
  # Check reachability
     if dist > (self.l1 + self.l2) or dist < abs(self.l1 - self.l2):

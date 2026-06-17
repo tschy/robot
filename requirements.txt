@@ -4,3 +4,4 @@ black==24.3.0
 
 # Standard math/robotics helpers if needed later
 numpy==1.26.4
+matplotlib
