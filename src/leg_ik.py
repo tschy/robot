@@ -54,6 +54,8 @@ class LegIK:
         if self.l1 == 0 or self.l2 == 0 :
             return 0.0, 0.0
 
+
+
         # 2. Call the engine
         try:
             return self.calculate_angles(x, y)
@@ -63,21 +65,9 @@ class LegIK:
 """
 constraints:
 
- # Ensure we don't divide by zero
-
  # Target not reachable: too close to hip, leg too thick, etc., define and account 
  for unreachable zones
-    if dist < 0.1:
-        raise ValueError("Target too close to hip (Singularity).")
-
-# Apply constraints
-    if not (self.min_h <= h_deg <= self.max_h) or not (self.min_k <= k_deg <= self.max_k):
-        raise ValueError("Target reachable but outside of physical servo limits.")
-
- # Check reachability
-    if dist > (self.l1 + self.l2) or dist < abs(self.l1 - self.l2):
-        raise ValueError("Target coordinate is out of reach.")    
-
+ 
 
 TODO
 - hip angle measured from where?
