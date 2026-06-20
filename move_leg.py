@@ -43,12 +43,11 @@ def main():
 
     # 2. Define a simple operational path (sequence of XY coordinates)
     path_targets = [
-        (10.0, -8.0),
-        (0.0, -15.0),
-        (5.0, -5.0),
-        (30.0, -30.0) # Intentional out-of-reach target to test the guard
+        (0.0, -110.0),  # Target 1: Neutral Standing position straight down
+        (30.0, -100.0),  # Target 2: Step Forward (Foot moves out and slightly up)
+        (-30.0, -100.0),  # Target 3: Step Backward (Foot pushes behind)
+        (0.0, -170.0)  # Target 4: Intentional Out-Of-Reach (To test your MovementGuard)
     ]
-
     # 3. Execution Loop
     for idx, (target_x, target_y) in enumerate(path_targets):
         print(f"\n--- Processing Target {idx + 1}: "
