@@ -1,3 +1,7 @@
+import config
+from config import SERVOS
+
+
 class ServoController:
     def __init__(self,
                  limits: dict[str, tuple[float, float]],
@@ -14,6 +18,13 @@ class ServoController:
             # environment crashes
             from adafruit_servokit import ServoKit
             self.kit = ServoKit(channels=channels)
+
+            servo_0_config = SERVOS["0"]
+            
+            self.kit.servo[0].set_pulse_width_range(
+                servo_0_config["min_pulse"],
+                servo_0_config["max_pulse"],
+            )
             print("[PRODUCTION MODE] ServoController initialized \n "
                   "                  with hardware connection.")
 
@@ -26,25 +37,19 @@ class ServoController:
         min_angle, max_angle = self.limits[joint_type]
         return max(min_angle, min(max_angle, angle))
 
-    def move_leg(self, hip_angle, knee_angle):
+    def move_leg(self, hip_angle):
         """Processes angles, applies offsets/clamping, and moves
         hardware or simulates it."""
-        # 1. Apply offset + clamp for hip
+        # Apply offset + clamp for hip
         safe_hip = self.clamp_joint_angle(
             hip_angle + self.offsets["hip"], "hip"
         )
 
-        # 2. Apply offset + clamp for knee
-        safe_knee = self.clamp_joint_angle(
-            knee_angle + self.offsets["knee"], "knee"
-        )
-
-        # 3. Branch execution based on environment mode
+        # Branch execution based on environment mode
         if self.simulate:
             print(
                 f"[SIMULATION PWM] Sending Signals -> \n "
-                f"   Channel 0 (Hip): {safe_hip:.1f}° |  \n "
-                f"   Channel 1 (Knee): {safe_knee:.1f}°")
+                f"   Channel 0 (Hip): {safe_hip:.1f}°"
+            )
         else:
             self.kit.servo[0].angle = safe_hip
-            self.kit.servo[1].angle = safe_knee

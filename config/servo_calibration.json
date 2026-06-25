@@ -1,0 +1,8 @@
+{
+  "servos": {
+    "0": {
+      "min_pulse": 700,
+      "max_pulse": 2480
+    }
+  }
+}
