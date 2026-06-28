@@ -1,11 +1,12 @@
-import config
 from config import SERVOS
+from config import SERVO_LIMITS, OFFSETS
 
 
 class ServoController:
     def __init__(self,
                  limits: dict[str, tuple[float, float]],
                  offsets: dict[str, float],
+                 servos: dict[str, float],
                  channels: int = 16,
                  simulate: bool = True):
 
@@ -25,23 +26,37 @@ class ServoController:
                 servo_0_config["min_pulse"],
                 servo_0_config["max_pulse"],
             )
+
             print("[PRODUCTION MODE] ServoController initialized \n "
                   "                  with hardware connection.")
+
+            print(f"[PRODUCTION MODE] min_pulse {servo_0_config['min_pulse']},\n "
+                  f"                  max_pulse {servo_0_config['max_pulse']}.")
 
         else:
             print("[SIMULATION MODE] ServoController initialized \n "
                   "                 without physical hardware connection.")
 
-    def clamp_joint_angle(self, angle: float, joint_type: str):
+    @classmethod
+    def from_config(cls, simulate: bool = True):
+        # 2. The class "keeps" the details here
+        return cls(
+            limits=SERVO_LIMITS,
+            offsets=OFFSETS,
+            servos= SERVOS,
+            simulate=simulate
+        )
+
+    def secure_joint_angle(self, angle: float, joint_type: str):
         """Enforces safety limits for a specific joint."""
         min_angle, max_angle = self.limits[joint_type]
         return max(min_angle, min(max_angle, angle))
 
-    def move_leg(self, hip_angle):
+    def move_joint(self, hip_angle):
         """Processes angles, applies offsets/clamping, and moves
         hardware or simulates it."""
         # Apply offset + clamp for hip
-        safe_hip = self.clamp_joint_angle(
+        safe_hip = self.secure_joint_angle(
             hip_angle + self.offsets["hip"], "hip"
         )
 
@@ -52,4 +67,5 @@ class ServoController:
                 f"   Channel 0 (Hip): {safe_hip:.1f}°"
             )
         else:
+            print(f"[DEBUG] Final command to hardware: {safe_hip} degrees")
             self.kit.servo[0].angle = safe_hip
