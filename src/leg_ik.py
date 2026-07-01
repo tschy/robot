@@ -49,10 +49,17 @@ class LegIK:
 
         # 2. Call the engine
         try:
-            return self.calculate_angles(x, y)
+            # 1. Get the pure geometric angles
+            h_deg, k_deg = self.calculate_angles(x, y)
+
+            # 2. Translate the geometry to your physical servo positions
+            servo_hip = h_deg - 90.0
+            servo_knee = k_deg - 90.0
+
+            # 3. Return the actual physical servo commands
+            return servo_hip, servo_knee
         except ValueError:
             # Handle "out of reach" logic here
             return None, None
 
-# TODO hip angle measured from where?
 # TODO LATER legs should be bend in neutral position

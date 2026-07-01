@@ -1,20 +1,20 @@
 {
   "dimensions": {
-    "thigh_length": 93.0,
-    "shin_length": 98.0
+    "thigh_length": 118.0,
+    "shin_length": 103.0
   },
   "servo_limits": {
     "hip": [
-      10.0,
-      170.0
+      5.0,
+      175.0
     ],
     "knee": [
-      10.0,
-      170.0
+      5.0,
+      175.0
     ]
   },
   "offsets": {
-    "hip": 0.0,
+    "hip":  0.0,
     "knee": 0.0
   }
 }

@@ -3,6 +3,10 @@
     "0": {
       "min_pulse": 700,
       "max_pulse": 2480
+    },
+    "1": {
+      "min_pulse": 500,
+      "max_pulse": 2500
     }
   }
 }

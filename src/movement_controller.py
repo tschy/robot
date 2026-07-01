@@ -6,12 +6,12 @@ class MovementController:
     def __init__(self, servo_controller):
         self.controller = servo_controller
 
-        dims1 = DIMENSIONS["thigh_length"]
-        dims2 = DIMENSIONS["shin_length"]
+        thigh_length = DIMENSIONS["thigh_length"]
+        shin_length = DIMENSIONS["shin_length"]
 
         # Initialize all three core tools
-        self.engine = LegIK(l1=dims1, l2=dims2)
-        self.guard = MovementGuard(dims1, dims2)
+        self.engine = LegIK(l1=thigh_length, l2=shin_length)
+        self.guard = MovementGuard(thigh_length, shin_length)
 
     def move_to_coordinate(
             self,
@@ -31,16 +31,16 @@ class MovementController:
         print(f"\n--- Processing Target ({target_x}, {target_y}) ---")
 
         # 2. Geometry (Math Engine)
-
-        hip_angle, knee_angle = self.engine.calculate_angles(
-            target_x, target_y
-        )
+        hip_angle, knee_angle = (
+            self
+            .engine
+            .calculate_angles(target_x, target_y))
 
         print(f"Calculated Geometry -> Hip: {hip_angle:.1f}°"
               f", Knee: {knee_angle:.1f}°")
 
         # 3. Hardware (Servo Driver)
-        self.controller.move_joint(hip_angle)
+        self.controller.move_joint(hip_angle, knee_angle)
 
         print(f"Moved to ({target_x}, {target_y}) successfully.")
         return True
